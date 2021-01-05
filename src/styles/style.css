@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    code {
+        @apply bg-purple-100;
+    }
+
+    nav a {
+        text-decoration: underline;
+    }
+}

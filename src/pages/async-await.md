@@ -1,0 +1,65 @@
+## How I Learned to Love `async/await`
+
+The asynchonous nature of JavaScript can be a painful thing to learn. Historically, you would use callbacks to tell a function what to do after it's done it's thing. This can quickly lead to a Callback Christmas Tree of Doom/Callback Hell. Nobody likes ~~Milhouse~~ those.
+
+### Promises are awesome (sometimes)
+
+Then came Promises. Perfect, right? Not always. You can still end up with somewhat unpleasant nesting or chaining of `then`s.
+
+The next issue is how you get the return value out of the Promise scope.
+
+```
+let retVal
+
+fetch().then(retVal => {
+    myVal = retVal
+})
+```
+
+This is painful to me. In any complex JavaScript code, `let` is generally considered a smell and can lead to misunderstandings by other devs.
+
+### The New Way™️
+
+So `async/await` is our best pal, but you don't get everthing for free. In most documentation you'll see error handling done something like this:
+
+```
+try {
+    const retVal = await fetch()
+} catch(error) {
+    console.error(error)
+}
+```
+
+How is this better?! You still potentially end up having to `let` your return value out of the `try/catch` scope._Thank u. Next_.
+
+### A much nicer way
+
+Do all your awaits inside one function. As long as all your promises are `await`ed, any errors will bubble up to where you called it from.
+
+```
+async function doTheThings(message: Message): Promise<void> {
+    const data = await fetch().then(req => req.json())
+    await validate(data)
+    await message.send(data)
+}
+
+doTheThings().catch(handleError)
+```
+
+if something **doesn't break** the rest of the function, you can catch the error still:
+
+```
+async function doTheThings(message: Message): Promise<void> {
+    const {data, error} = await fetch()
+        .then(req => req.json())
+        .then(data => ({data}))
+        .catch(error => ({error}))
+
+    if (error) {
+        console.error('Something minor happened:", error.message)
+    }
+
+    // ...continue
+}
+
+```
