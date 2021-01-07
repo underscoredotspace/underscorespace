@@ -13,19 +13,19 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
                     name="viewport"
                     content="width=device-width, initial-scale=1.0"
                 />
-                <script
-                    async
-                    defer
-                    data-domain="underscore.space"
-                    src="https://stats.underscore.space/js/plausible.js"
-                ></script>
+                <link
+                    href="https://unpkg.com/prism-theme-night-owl@1.4.0/build/no-italics.css"
+                    rel="stylesheet"
+                />
             </Head>
             <div className="flex flex-col max-w-3xl mx-auto h-full">
-                <header className="w-full border-b-4 mb-4 p-3 text-lg text-center">
-                    <h1>underscore.space</h1>
+                <header className="flex items-center justify-center fixed h-16 w-full max-w-3xl border-b-4 mb-4 px-3 text-lg text-center bg-white">
+                    <h1 className="text-3xl font-serif font-black tracking-widest">
+                        underscore.space
+                    </h1>
                 </header>
-                <nav className="border-b-2 px-2 pb-4">
-                    <ul className="mb-2">
+                <nav className="border-b-2 px-2 pb-4 mt-16">
+                    <ul className="mb-2 mt-4">
                         <li>
                             <RouteLink href="/">Home</RouteLink>
                         </li>
@@ -35,7 +35,12 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
                     </ul>
                     <details open>
                         <summary>Blog</summary>
-                        <ul>
+                        <ul className="list-disc list-inside ml-4">
+                            {/* <li>
+                                <RouteLink href="/wtf-is-a-strim-stram">
+                                    Teardown of my web app with face-detection
+                                </RouteLink>
+                            </li> */}
                             <li>
                                 <RouteLink href="/async-await">
                                     A nice <code>async/await</code> pattern

@@ -8,10 +8,10 @@ Then came Promises. Perfect, right? Not always. You can still end up with somewh
 
 The next issue is how you get the return value out of the Promise scope.
 
-```
+```typescript
 let retVal
 
-fetch().then(retVal => {
+fetch().then((retVal) => {
     myVal = retVal
 })
 ```
@@ -22,10 +22,10 @@ This is painful to me. In any complex JavaScript code, `let` is generally consid
 
 So `async/await` is our best pal, but you don't get everthing for free. In most documentation you'll see error handling done something like this:
 
-```
+```typescript
 try {
     const retVal = await fetch()
-} catch(error) {
+} catch (error) {
     console.error(error)
 }
 ```
@@ -34,21 +34,22 @@ How is this better?! You still potentially end up having to `let` your return va
 
 ### A much nicer way
 
-Do all your awaits inside one function. As long as all your promises are `await`ed, any errors will bubble up to where you called it from.
+Do all your `await`s inside one function. As long as all your promises are `await`ed, any errors will _bubble up_ to where you called it from.
 
-```
+```typescript
 async function doTheThings(message: Message): Promise<void> {
-    const data = await fetch().then(req => req.json())
+    const data = await fetch().then((req) => req.json())
     await validate(data)
     await message.send(data)
 }
 
+// elsewhere
 doTheThings().catch(handleError)
 ```
 
-if something **doesn't break** the rest of the function, you can catch the error still:
+If something **doesn't break** the rest of the function, you can catch the error still:
 
-```
+```typescript
 async function doTheThings(message: Message): Promise<void> {
     const {data, error} = await fetch()
         .then(req => req.json())
@@ -63,3 +64,5 @@ async function doTheThings(message: Message): Promise<void> {
 }
 
 ```
+
+I use this pattern on a Discord bot. All "commands" must return a promise, and any fatal errors are handled in the parent calling function. Very satisfying to work with.
