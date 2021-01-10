@@ -8,17 +8,39 @@ import renderToString from "next-mdx-remote/render-to-string"
 
 const CONTENT_PATH = path.join(process.cwd(), "content")
 
-export async function getContentFiles(): Promise<string[]> {
-    return readdir(CONTENT_PATH).then((paths) =>
-        paths
-            .map((path) => path.replace(/\..+$/, ""))
-            .filter((path) => !path.startsWith("__"))
-    )
-}
-
 interface Content {
     data: Record<string, string>
     content: string
+}
+
+export interface ContentFile {
+    slug: string
+    meta: Content["data"]
+}
+
+export async function getContentFiles(): Promise<ContentFile[]> {
+    return readdir(CONTENT_PATH).then(
+        async (paths) =>
+            await Promise.all(
+                paths
+                    .filter((path) => !path.startsWith("__"))
+                    .map(async (path) => {
+                        const slug = path.replace(/\..+$/, "")
+                        const meta = await getMeta(slug)
+
+                        return { slug, meta }
+                    })
+            )
+    )
+}
+
+async function getMeta(slug: string): Promise<Content["data"]> {
+    const [filepath] = await glob(`${CONTENT_PATH}/${slug}.md?(x)`)
+    const fileContents = await readFile(filepath, "utf8")
+
+    const { data } = matter(fileContents)
+
+    return data
 }
 
 export async function getContentFile(slug: string): Promise<Content> {
