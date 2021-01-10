@@ -62,7 +62,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths<any> = async () => {
     const contentFiles = await getContentFiles()
 
     const paths = {
