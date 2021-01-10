@@ -5,6 +5,7 @@ import _glob from "glob"
 import { promisify } from "util"
 const glob = promisify(_glob)
 import renderToString from "next-mdx-remote/render-to-string"
+import prism from "@mapbox/rehype-prism"
 
 const CONTENT_PATH = path.join(process.cwd(), "content")
 
@@ -48,7 +49,9 @@ export async function getContentFile(slug: string): Promise<Content> {
     const fileContents = await readFile(filepath, "utf8")
 
     const { data, content: mdx } = matter(fileContents)
-    const content = await renderToString(mdx)
+    const content = await renderToString(mdx, {
+        mdxOptions: { rehypePlugins: [prism] },
+    })
 
     return { data, content }
 }
