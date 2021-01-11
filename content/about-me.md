@@ -2,8 +2,6 @@
 title: "About Me"
 ---
 
-## The Author
-
 I'm [Colin Tindle](https://linkedin.com/in/underscoredotspace), a front-end web developer based in Glasgow, UK. I work for FanDuel, on a hybrid React Native/React Web application.
 
 As much as I love working with React and React Native, my first love is the web. HTML, CSS and "vanilla" JavaScript have been at the core of my personal projects for a very long time.

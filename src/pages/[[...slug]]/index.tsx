@@ -1,16 +1,24 @@
-import { ContentFile, getContentFile, getContentFiles } from "getPage"
+import { ContentFile, getContentFile, getContentPaths } from "getPage"
 import { GetStaticPaths, GetStaticProps } from "next"
+import Head from "next/head"
 import hydrate from "next-mdx-remote/hydrate"
 import RouteLink from "components/RouteLink"
+import SocialCard from "components/SocialCard"
 
-interface PageProps {
+interface PageProps extends ContentFile {
     content: string
     paths: ContentFile[]
 }
 
-const Page: React.FC<PageProps> = ({ content, paths }) => (
+const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
     <div className="flex flex-col max-w-3xl mx-auto h-full">
         <header className="flex items-center justify-center fixed h-16 w-full max-w-3xl border-b-4 mb-4 px-3 text-lg text-center bg-white">
+            <Head>
+                <title>
+                    underscore.space{meta.title && ` - ${meta.title}`}
+                </title>
+                <SocialCard description={meta.title} />
+            </Head>
             <h1 className="text-3xl font-serif font-black tracking-widest">
                 underscore.space
             </h1>
@@ -22,10 +30,10 @@ const Page: React.FC<PageProps> = ({ content, paths }) => (
                 </li>
                 {paths &&
                     paths
-                        .filter(({ slug }) => slug !== "index")
-                        .map(({ slug, meta }) => (
-                            <li key={`page-path-${slug}`}>
-                                <RouteLink href={`/${slug}`}>
+                        .filter((p) => p.slug !== "index")
+                        .map(({ slug: s, meta }) => (
+                            <li key={`page-path-${s}`}>
+                                <RouteLink href={`/${s}`}>
                                     {meta.title}
                                 </RouteLink>
                             </li>
@@ -46,28 +54,29 @@ const Page: React.FC<PageProps> = ({ content, paths }) => (
         <main className="px-2 mb-4 max-w-full">
             <article className="prose max-w-none">
                 <base target="_blank" />
-                {content ? <>{hydrate(content)}</> : <>error</>}
+                {meta.title && <h2>{meta.title}</h2>}
+                {hydrate(content)}
             </article>
         </main>
     </div>
 )
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const { slug } = params
-    const { content } = await getContentFile(`${slug ?? "index"}`)
+    const slug = params?.slug?.toString() ?? "index"
+    const { content, meta } = await getContentFile(slug)
 
-    const paths = await getContentFiles()
-    return {
-        props: { paths, content },
-    }
+    const paths = await getContentPaths()
+    const props = { paths, content, slug, meta }
+
+    return { props }
 }
 
 export const getStaticPaths: GetStaticPaths<any> = async () => {
-    const contentFiles = await getContentFiles()
+    const contentFiles = await getContentPaths()
 
     const paths = {
-        paths: contentFiles.map(({ meta, slug }) => ({
-            params: { slug: [slug === "index" ? "" : slug], meta },
+        paths: contentFiles.map(({ slug }) => ({
+            params: { slug: [slug === "index" ? "" : slug] },
         })),
         fallback: false,
     }

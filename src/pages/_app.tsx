@@ -6,7 +6,6 @@ import "prism-theme-night-owl/build/no-italics.css"
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
     <>
         <Head>
-            <title>underscore.space</title>
             <meta charSet="UTF-8" />
             <meta
                 name="viewport"
