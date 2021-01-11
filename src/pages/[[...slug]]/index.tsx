@@ -46,7 +46,7 @@ const Page: React.FC<PageProps> = ({ content, paths }) => (
         <main className="px-2 mb-4 max-w-full">
             <article className="prose max-w-none">
                 <base target="_blank" />
-                {hydrate(content)}
+                {content ? <>{hydrate(content)}</> : <>error</>}
             </article>
         </main>
     </div>
@@ -69,7 +69,7 @@ export const getStaticPaths: GetStaticPaths<any> = async () => {
         paths: contentFiles.map(({ meta, slug }) => ({
             params: { slug: [slug === "index" ? "" : slug], meta },
         })),
-        fallback: true,
+        fallback: false,
     }
 
     return paths
