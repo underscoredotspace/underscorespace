@@ -61,7 +61,10 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
     </div>
 )
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<
+    PageProps,
+    { slug: string[] }
+> = async ({ params }) => {
     const slug = params?.slug?.toString() ?? "index"
     const { content, meta } = await getContentFile(slug)
 
@@ -71,7 +74,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { props }
 }
 
-export const getStaticPaths: GetStaticPaths<any> = async () => {
+export const getStaticPaths: GetStaticPaths<{ slug: string[] }> = async () => {
     const contentFiles = await getContentPaths()
 
     const paths = {
