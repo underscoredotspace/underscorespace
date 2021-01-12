@@ -41,17 +41,23 @@ async function getMeta(slug: string): Promise<Content["meta"]> {
 
     const { data } = matter(fileContents)
 
-    return data
+    return {
+        ...data,
+        titleHtml: data.title ? await mdx2html(data.title) : null,
+    }
 }
+
+export const mdx2html = async (mdx: string) =>
+    renderToString(mdx, {
+        mdxOptions: { rehypePlugins: [prism] },
+    })
 
 export async function getContentFile(slug: string): Promise<Content> {
     const [filepath] = await glob(`${CONTENT_PATH}/${slug}.md?(x)`)
     const fileContents = await readFile(filepath, "utf8")
 
     const { data: meta, content: mdx } = matter(fileContents)
-    const content = await renderToString(mdx, {
-        mdxOptions: { rehypePlugins: [prism] },
-    })
+    const content = await mdx2html(mdx)
 
     return { meta, content }
 }

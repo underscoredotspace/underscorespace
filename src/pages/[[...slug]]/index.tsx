@@ -1,4 +1,4 @@
-import { ContentFile, getContentFile, getContentPaths } from "getPage"
+import { ContentFile, getContentFile, getContentPaths, mdx2html } from "getPage"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
 import hydrate from "next-mdx-remote/hydrate"
@@ -18,6 +18,15 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
                     underscore.space{meta.title && ` - ${meta.title}`}
                 </title>
                 <SocialCard title={meta.title} />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
+                />
+                <link
+                    rel="shortcut icon"
+                    href="/favicon.ico"
+                    type="image/x-icon"
+                />
             </Head>
             <h1 className="text-3xl font-serif font-black tracking-widest">
                 underscore.space
@@ -31,13 +40,15 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
                 {paths &&
                     paths
                         .filter((p) => p.slug !== "index")
-                        .map(({ slug: s, meta }) => (
-                            <li key={`page-path-${s}`}>
-                                <RouteLink href={`/${s}`}>
-                                    {meta.title}
-                                </RouteLink>
-                            </li>
-                        ))}
+                        .map(({ slug: s, meta: m }) => {
+                            return (
+                                <li key={`page-path-${s}`}>
+                                    <RouteLink href={`/${s}`}>
+                                        {hydrate(m.titleHtml)}
+                                    </RouteLink>
+                                </li>
+                            )
+                        })}
             </ul>
             {/* <details open>
                     <summary>Blog</summary>
@@ -54,7 +65,6 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
         <main className="px-2 mb-4 max-w-full">
             <article className="prose max-w-none">
                 <base target="_blank" />
-                {meta.title && <h2>{meta.title}</h2>}
                 {hydrate(content)}
             </article>
         </main>
@@ -69,7 +79,14 @@ export const getStaticProps: GetStaticProps<
     const { content, meta } = await getContentFile(slug)
 
     const paths = await getContentPaths()
-    const props = { paths, content, slug, meta }
+    const props = {
+        paths,
+        content,
+        slug,
+        meta,
+    }
+
+    console.log({ props })
 
     return { props }
 }
