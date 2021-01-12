@@ -1,4 +1,4 @@
-import { ContentFile, getContentFile, getContentPaths, mdx2html } from "getPage"
+import { ContentFile, getContentFile, getContentPaths } from "getPage"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
 import hydrate from "next-mdx-remote/hydrate"
@@ -85,8 +85,6 @@ export const getStaticProps: GetStaticProps<
         slug,
         meta,
     }
-
-    console.log({ props })
 
     return { props }
 }

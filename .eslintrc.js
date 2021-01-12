@@ -6,6 +6,7 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:jsx-a11y/recommended",
         "plugin:react/recommended",
+        "plugin:mdx/recommended",
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -32,6 +33,12 @@ module.exports = {
         "react/react-in-jsx-scope": "off",
         "jsx-a11y/anchor-is-valid": "off",
     },
+    overrides: [
+        {
+            files: ["*.mdx", "*.md"],
+            parser: "eslint-mdx",
+        },
+    ],
     settings: {
         react: {
             version: "detect",
