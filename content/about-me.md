@@ -10,4 +10,4 @@ I have a [portfolio](https://messy.cloud) (yes, vanilla) showing a bunch of thes
 
 Currently, I'm learning Next.js which is a really exciting way to develop for me. Being able to write React component based apps, which can be run without JavaScript enabled, is great for most websites I find myself making outside of work - **this one** included.
 
-Of course I'm out there on social media, [Twitter](https://twitter.com/_dotSpace), [Instagram](https://instagr.am/colinfoldsfive) but I don't post that much just now.
+Of course I'm out there on social media ([Twitter](https://twitter.com/_dotSpace), [Instagram](https://instagr.am/colinfoldsfive)) but I don't post that much just now.

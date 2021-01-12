@@ -37,18 +37,15 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
                 <li>
                     <RouteLink href="/">Home</RouteLink>
                 </li>
-                {paths &&
-                    paths
-                        .filter((p) => p.slug !== "index")
-                        .map(({ slug: s, meta: m }) => {
-                            return (
-                                <li key={`page-path-${s}`}>
-                                    <RouteLink href={`/${s}`}>
-                                        {hydrate(m.titleHtml)}
-                                    </RouteLink>
-                                </li>
-                            )
-                        })}
+                {paths
+                    .filter((path) => path.slug !== "index")
+                    .map((path) => (
+                        <li key={`page-path-${path.slug}`}>
+                            <RouteLink href={`/${path.slug}`}>
+                                {hydrate(path.meta.titleHtml)}
+                            </RouteLink>
+                        </li>
+                    ))}
             </ul>
             {/* <details open>
                     <summary>Blog</summary>

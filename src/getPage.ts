@@ -7,11 +7,12 @@ const glob = promisify(_glob)
 import renderToString from "next-mdx-remote/render-to-string"
 import prism from "@mapbox/rehype-prism"
 
+const MDX_OPTIONS = { mdxOptions: { rehypePlugins: [prism] } }
 const CONTENT_PATH = path.join(process.cwd(), "content")
 
 interface Content {
     meta: Record<string, string>
-    content: string
+    content: any
 }
 
 export interface ContentFile {
@@ -19,19 +20,22 @@ export interface ContentFile {
     meta: Content["meta"]
 }
 
-export async function getContentPaths(): Promise<ContentFile[]> {
-    return readdir(CONTENT_PATH).then(
-        async (paths) =>
-            await Promise.all(
-                paths
-                    .filter((path) => !path.startsWith("__"))
-                    .map(async (path) => {
-                        const slug = path.replace(/\..+$/, "")
-                        const meta = await getMeta(slug)
+export const getContentPaths = async (
+    dir = CONTENT_PATH
+): Promise<ContentFile[]> => {
+    const allPaths = await readdir(dir)
+    const paths =
+        process.env["NODE_ENV"] === "development"
+            ? allPaths
+            : allPaths.filter((path) => !path.startsWith("__"))
 
-                        return { slug, meta }
-                    })
-            )
+    return Promise.all(
+        paths.map(async (p) => {
+            const slug = p.replace(/\..+$/, "")
+            const meta = await getMeta(slug)
+
+            return { slug, meta }
+        })
     )
 }
 
@@ -43,21 +47,18 @@ async function getMeta(slug: string): Promise<Content["meta"]> {
 
     return {
         ...data,
-        titleHtml: data.title ? await mdx2html(data.title) : null,
+        titleHtml: data.title
+            ? await renderToString(data.title, MDX_OPTIONS)
+            : null,
     }
 }
-
-export const mdx2html = async (mdx: string) =>
-    renderToString(mdx, {
-        mdxOptions: { rehypePlugins: [prism] },
-    })
 
 export async function getContentFile(slug: string): Promise<Content> {
     const [filepath] = await glob(`${CONTENT_PATH}/${slug}.md?(x)`)
     const fileContents = await readFile(filepath, "utf8")
 
     const { data: meta, content: mdx } = matter(fileContents)
-    const content = await mdx2html(mdx)
+    const content = await renderToString(mdx, MDX_OPTIONS)
 
     return { meta, content }
 }
