@@ -10,6 +10,8 @@ const SocialCard: React.FC<SocialCardProps> = ({ title = "Home" }) => (
         <meta property="og:description" content={DESCIRIPTION} />
         <meta name="twitter:card" content="summary" />
         <meta name="og:image" content="/colon.png" />
+        <meta name="twitter:image" content="/colon.png" />
+        <meta name="theme-color" content="#ff69b4" />
     </>
 )
 
