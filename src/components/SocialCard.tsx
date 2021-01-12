@@ -1,19 +1,21 @@
 interface SocialCardProps {
-    description: string
+    title: string
 }
 
-const SocialCard: React.FC<SocialCardProps> = ({
-    description = "Tech Blog by Colin Tindle",
-}) => (
+const DESCIRIPTION = "underscore.space - a JavaScript blog by Colin Tindle"
+
+const SocialCard: React.FC<SocialCardProps> = ({ title = "Home" }) => (
     <>
-        <meta property="og:title" content="underscore.space" />
-        <meta property="og:url" content="https://underscore.space" />
-        <meta property="og:description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta name="twitter:title" content={title} />
+
+        <meta property="og:description" content={DESCIRIPTION} />
+        <meta property="twitter:description" content={DESCIRIPTION} />
 
         <meta name="twitter:card" content="summary" />
-        <meta property="twitter:title" content="underscore.space" />
 
-        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content="/colon.png" />
+        <meta name="og:image" content="/colon.png" />
     </>
 )
 
