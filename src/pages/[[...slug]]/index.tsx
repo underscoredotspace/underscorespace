@@ -17,11 +17,6 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
                 <title>
                     underscore.space{meta.title && ` - ${meta.title}`}
                 </title>
-                <link
-                    rel="shortcut icon"
-                    href="/favicon.ico"
-                    type="image/x-icon"
-                />
                 <SocialCard title={meta.title} />
             </Head>
             <h1 className="text-3xl font-serif font-black tracking-widest">
