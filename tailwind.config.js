@@ -12,6 +12,10 @@ module.exports = {
                         pre: {
                             "max-width": "100%",
                         },
+                        img: {
+                            "margin-top": 0,
+                            "margin-bottom": 0,
+                        },
                     },
                 },
             },
