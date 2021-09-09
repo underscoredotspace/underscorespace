@@ -1,10 +1,12 @@
+import { FC } from "react"
+
 interface SocialCardProps {
     title: string
 }
 
 const DESCIRIPTION = "underscore.space - a JavaScript blog by Colin Tindle"
 
-const SocialCard: React.FC<SocialCardProps> = ({ title = "Home" }) => (
+const SocialCard: FC<SocialCardProps> = ({ title = "Home" }) => (
     <>
         <meta property="og:title" content={title} />
         <meta property="og:description" content={DESCIRIPTION} />

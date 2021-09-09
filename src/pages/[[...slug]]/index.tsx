@@ -4,13 +4,14 @@ import Head from "next/head"
 import hydrate from "next-mdx-remote/hydrate"
 import RouteLink from "components/RouteLink"
 import SocialCard from "components/SocialCard"
+import { FC } from "react"
 
 interface PageProps extends ContentFile {
     content: string
     paths: ContentFile[]
 }
 
-const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
+const Page: FC<PageProps> = ({ content, paths, meta }) => (
     <div className="flex flex-col max-w-3xl mx-auto h-full">
         <header className="flex items-center justify-center fixed h-16 w-full max-w-3xl border-b-4 mb-4 px-3 text-lg text-center bg-white">
             <Head>
@@ -38,10 +39,13 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
                     <RouteLink href="/">Home</RouteLink>
                 </li>
                 {paths
-                    .filter((path) => path.slug !== "index")
+                    .filter(
+                        (path) =>
+                            path.slug[0] !== "index" && path.meta?.titleHtml
+                    )
                     .map((path) => (
                         <li key={`page-path-${path.slug}`}>
-                            <RouteLink href={`/${path.slug}`}>
+                            <RouteLink href={`/${path.slug.join("/")}`}>
                                 {hydrate(path.meta.titleHtml)}
                             </RouteLink>
                         </li>
@@ -68,30 +72,28 @@ const Page: React.FC<PageProps> = ({ content, paths, meta }) => (
     </div>
 )
 
-export const getStaticProps: GetStaticProps<
-    PageProps,
-    { slug: string[] }
-> = async ({ params }) => {
-    const slug = params?.slug?.toString() ?? "index"
-    const { content, meta } = await getContentFile(slug)
+export const getStaticProps: GetStaticProps<PageProps, { slug: string[] }> =
+    async ({ params }) => {
+        const slug = params?.slug // ?.toString() ?? "index"
+        const { content, meta } = await getContentFile(slug.join("/"))
 
-    const paths = await getContentPaths()
-    const props = {
-        paths,
-        content,
-        slug,
-        meta,
+        const paths = await getContentPaths()
+        const props = {
+            paths,
+            content,
+            slug,
+            meta,
+        }
+
+        return { props }
     }
-
-    return { props }
-}
 
 export const getStaticPaths: GetStaticPaths<{ slug: string[] }> = async () => {
     const contentFiles = await getContentPaths()
 
     const paths = {
         paths: contentFiles.map(({ slug }) => ({
-            params: { slug: [slug === "index" ? "" : slug] },
+            params: { slug },
         })),
         fallback: false,
     }

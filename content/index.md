@@ -1,3 +1,7 @@
+---
+title: "Home"
+---
+
 ## A Blog?
 
 Well, it's about time I started sharing the things I learn at work and in my personal projects. I've been here many times "writing a blog", but in reality I've always been more focused on creating a blogging **platform** than actually creating useful content.
