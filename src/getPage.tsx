@@ -5,20 +5,8 @@ import renderToString from "next-mdx-remote/render-to-string"
 import _glob from "glob"
 import { promisify } from "util"
 const glob = promisify(_glob)
-import prism from "@mapbox/rehype-prism"
-
-const MDX_OPTIONS = { mdxOptions: { rehypePlugins: [prism] } }
-const CONTENT_PATH = path.join(process.cwd(), "content")
-
-interface Content {
-    meta: Record<string, string>
-    content: any
-}
-
-export interface ContentFile {
-    slug: string[]
-    meta: Content["meta"]
-}
+import { Content, ContentFile } from "types"
+import { CONTENT_PATH, MDX_OPTIONS } from "./constants"
 
 export const _getContentPaths =
     (getMeta: typeof _getMeta) =>
@@ -49,7 +37,6 @@ export const _getContentPaths =
     }
 
 export const _getMeta = async (slug: string): Promise<Content["meta"]> => {
-    console.log({ getMeta: slug })
     const [filepath] = await glob(`${path.join(CONTENT_PATH, slug)}.md?(x)`)
     if (!filepath) {
         throw `[getMeta] Bad filepath <${slug}>`

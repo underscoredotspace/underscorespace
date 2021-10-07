@@ -1,7 +1,9 @@
-export interface ContentFile {
-    name: string
-}
-
-export interface ContentFolder extends ContentFile {
-    files: ContentFile[]
+export interface BlogPageProps {
+    content: string
+    menuPaths: {
+        path: string
+        current: boolean
+        titleHtml: any
+    }[]
+    meta: any
 }

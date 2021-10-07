@@ -1,9 +1,6 @@
 import * as getPage from "./getPage"
 
-const mockGetMeta = jest.fn((slug: string) => {
-    console.log("mockGetMeta", slug)
-    return Promise.resolve({})
-})
+const mockGetMeta = jest.fn((slug: string) => Promise.resolve({ slug }))
 
 describe("getContentPaths", () => {
     const getContentPaths = getPage._getContentPaths(mockGetMeta)
@@ -14,14 +11,14 @@ describe("getContentPaths", () => {
         expect(paths).toMatchObject([
             {
                 slug: ["about-me"],
-                meta: expect.any(Object),
+                meta: { slug: "about-me" },
             },
             {
-                meta: expect.any(Object),
+                meta: { slug: "blog/async-await" },
                 slug: ["blog", "async-await"],
             },
             {
-                meta: expect.any(Object),
+                meta: { slug: "index" },
                 slug: ["index"],
             },
         ])
