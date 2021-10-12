@@ -19,17 +19,29 @@ const Page: FC<BlogPageProps> = ({ content, menuPaths }) => (
             </h1>
         </header>
         <nav className="border-b-2 px-2 pb-4 mt-16">
-            <ul className="mb-2 mt-4">
-                <li>
-                    <RouteLink href="/">Home</RouteLink>
-                </li>
-                {menuPaths.map((path) => (
-                    <li key={`page-path-${path.path}`}>
-                        <RouteLink href={`/${path.path}`}>
-                            {hydrate(path.titleHtml)}
-                        </RouteLink>
-                    </li>
-                ))}
+            <ul className="mb-2 mt-4 flex flex-col">
+                {menuPaths.map(({ path, current, titleHtml }) => {
+                    const LinkOrBold: React.FC = current
+                        ? ({ children }) => <b>{children}</b>
+                        : ({ children }) => (
+                              <RouteLink
+                                  href={`/${path === "index" ? "" : path}`}
+                              >
+                                  {children}
+                              </RouteLink>
+                          )
+
+                    return (
+                        <li
+                            key={`page-path-${path}`}
+                            className={
+                                path === "index" ? "order-first" : undefined
+                            }
+                        >
+                            <LinkOrBold>{hydrate(titleHtml)}</LinkOrBold>
+                        </li>
+                    )
+                })}
             </ul>
             {/* <details open>
             <summary>Blog</summary>
@@ -56,22 +68,20 @@ export const getStaticProps: GetStaticProps<
     BlogPageProps,
     { slug?: string[] }
 > = async ({ params }) => {
-    const pagePath = params.slug?.join("/") ?? "/index"
+    const pagePath = params.slug?.join("/") ?? "index"
     const content = await getPage(pagePath)
     const paths = await getPagePaths(CONTENT_PATH)
     const menuPaths = await Promise.all(
-        paths
-            .filter((path) => path !== "index")
-            .map(async (path) => {
-                const meta = await getPageMeta(path)
-                const titleHtml = await renderToString(meta.title, MDX_OPTIONS)
-
-                return {
-                    path,
-                    titleHtml,
-                    current: path === pagePath,
-                }
-            })
+        paths.map(async (path) => {
+            const meta = await getPageMeta(path)
+            const titleHtml = await renderToString(meta.title, MDX_OPTIONS)
+            console.log({ path, pagePath })
+            return {
+                path,
+                titleHtml,
+                current: path === pagePath,
+            }
+        })
     )
 
     const meta = await getPageMeta(pagePath)
